@@ -13,6 +13,11 @@
     <label for="exampleFormControlInput1" class="form-label">Body</label>
     <input type="textarea" name="body" class="form-control" id="exampleFormControlInput2" placeholder="body">
     </div>
+    <div class="mb-6">
+    <label for="exampleFormControlInput1" class="form-label">User ID</label>
+    <input type="textarea" name="User_id" class="form-control" id="exampleFormControlInput2" placeholder="ID">
+    </div>
+    <br>
     <div class="mb-5">
     <label for="exampleFormControlInput1" class="form-label">Enabled</label>
     <input type="checkbox" name="enabled" class="enabled" id="exampleFormControlInput2" placeholder="body">

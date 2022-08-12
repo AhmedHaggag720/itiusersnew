@@ -44,7 +44,7 @@ class PostController extends Controller
         $enabled = $req->input('enabled');
         $enabled = 'on' ? $enabled = '1' : $enabled = '0';
         $published_at = date("Y-m-d H:i:s", strtotime('now'));
-        $user_id = 1;
+        $user_id = $req->input('User_id');;
         Post::create(['title' => $title, 'body' => $body, 'enabled' => $enabled, 'published_at' => $published_at, 'user_id' => $user_id]);
         return redirect()->route('posts.index');
     }
