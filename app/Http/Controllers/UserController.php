@@ -59,9 +59,10 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //return view("users.show" , ['id' => $id]);
+        $posts = User::find($id)->posts;
+        return view("users.show" , ['id' => $id  , 'posts' => $posts ]);
        
-       return dd(User::find($id));
+       //return dd(User::find($id));
     }
 
     /**
