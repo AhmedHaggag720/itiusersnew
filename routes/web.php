@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,19 +19,25 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__.'/auth.php';
+
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
-Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+Route::get('/users/create', [UserController::class, 'create'])->name('users.create')->middleware(['auth']);
 
-Route::post('/users', [UserController::class, 'store'])->name('users.store');
+Route::post('/users', [UserController::class, 'store'])->name('users.store')->middleware(['auth']);
 
 Route::get('/users/{id}', [UserController::class, 'show'])->where('id', '[0-9]+')->name('users.show');
 
-Route::get('/users/{id}/edit', [UserController::class, 'edit'])->where('id', '[0-9]+')->name('users.edit');
+Route::get('/users/{id}/edit', [UserController::class, 'edit'])->where('id', '[0-9]+')->name('users.edit')->middleware(['auth']);
 
-Route::put('users/{id}', [UserController::class, 'update'])->where('id', '[0-9]+')->name('users.update');
+Route::put('users/{id}', [UserController::class, 'update'])->where('id', '[0-9]+')->name('users.update')->middleware(['auth']);
 
-Route::delete('/users/{id}', [UserController::class, 'destroy'])->where('id', '[0-9]+')->name('users.destroy');
+Route::delete('/users/{id}', [UserController::class, 'destroy'])->where('id', '[0-9]+')->name('users.destroy')->middleware(['auth']);
 
 
 

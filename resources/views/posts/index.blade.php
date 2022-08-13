@@ -22,7 +22,9 @@
             <td><a href="{{route('posts.show',['id'=>$post['id']])}}">{{$post['title']}}</a></td>
             <td>{{$post['body']}}</td>
             
+            <!-- {{$post->id}} -->
             <td>{{$post->user->name}}</td>
+            
            
             <td>
                 <a class="btn btn-primary" href="{{route('posts.edit',['id'=>$post['id']])}}" role="button">Edit</a>
