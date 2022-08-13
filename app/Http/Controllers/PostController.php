@@ -38,15 +38,26 @@ class PostController extends Controller
      */
     public function store(Request $req)
     {
+        $validatedData = $req->validate(['title' => 'required:posts|max:100', 'body' => 'required:posts|max:1000',]);
+
         $posts = Post::simplepaginate(15);
         $title = $req->input('title');
         $body = $req->input('body');
         $enabled = $req->input('enabled');
+        $image = $req->input('image');
         $enabled = 'on' ? $enabled = '1' : $enabled = '0';
         $published_at = date("Y-m-d H:i:s", strtotime('now'));
-        $user_id = $req->input('User_id');;
-        Post::create(['title' => $title, 'body' => $body, 'enabled' => $enabled, 'published_at' => $published_at, 'user_id' => $user_id]);
-        return redirect()->route('posts.index');
+        $user_id = auth()->id();
+
+
+        if ($req->hasfile('image')) {
+            $image = $req->file('image')->store('posts', 'public');
+        }
+
+        if ($validatedData) {
+            Post::create(['title' => $title, 'body' => $body, 'enabled' => $enabled, 'published_at' => $published_at, 'user_id' => $user_id, 'image' => $image]);
+            return redirect()->route('posts.index');
+        } else return 'Too much Text!';
     }
 
     /**
@@ -57,7 +68,8 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        return dd(Post::find($id));
+        $posts = Post::find($id);
+        return view('posts.show')->with(['posts' => $posts]);
     }
 
     /**
@@ -68,7 +80,11 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        return view('posts.edit')->with(['post' => Post::find($id), 'id' => $id]);
+        $user_id = Post::find($id);
+        if (auth()->id() == $user_id->user_id) {
+            return view('posts.edit')->with(['post' => Post::find($id), 'id' => $id]);
+        }
+        return redirect('/posts');
     }
 
     /**
@@ -80,12 +96,23 @@ class PostController extends Controller
      */
     public function update(Request $req, $id)
     {
+        $validatedData = $req->validate(['title' => 'required:posts|max:100', 'body' => 'required:posts|max:1000',]);
+
+        $user_id = Post::find($id);
+        if (auth()->id() == $user_id->user_id) {
+            if (Post::find($id)->update(['title' => $req->input('title'), 'body' => $req->input('body')])) {
+                return redirect()->route('posts.index');
+            }
+        }
+        return redirect()->back();
+
         $posts = Post::simplepaginate(15);
         $title = $req->input('title');
         $body = $req->input('body');
-        Post::find($id)->update(['title' => $title, 'body' => $body]);
-
-        return redirect()->route('posts.index');
+        if ($validatedData) {
+            Post::find($id)->update(['title' => $title, 'body' => $body]);
+            return redirect()->route('posts.index');
+        } else return 'Too much Text!';
     }
 
     /**
@@ -96,7 +123,7 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        
+
         Post::find($id)->delete();
         return redirect()->route('posts.index');
     }
@@ -109,7 +136,7 @@ class PostController extends Controller
 
     public function restoredeleted($id)
     {
-        
+
         Post::onlyTrashed()->find($id)->restore();
         return redirect()->route('posts.restore');
     }

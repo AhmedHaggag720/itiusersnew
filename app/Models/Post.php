@@ -25,7 +25,8 @@ class Post extends Model
         'body',
         'enabled', 
         'published_at',
-        'user_id'
+        'user_id',
+        'image'
     ];
 
     /**

@@ -7,6 +7,6 @@
     <title>Document</title>
 </head>
 <body>
-    <p>Display the specified resource with id  {{$id}} </p>
+    <img src="{{ asset('storage/'.$posts['image']) }}">
 </body>
 </html>
